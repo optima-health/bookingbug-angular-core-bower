@@ -42,7 +42,7 @@
     "angular-schema-form": "~0.7.6",
     "angular-animate": "~1.2.6",
     "angular-cache": "~3.2.5",
-    "angular-spectrum-colorpicker": "~1.4.2",
+    "angular-spectrum-colorpicker": "git://github.com/optima-health/angular-spectrum-colorpicker",
     "bootstrap-sass": "~3.3.6",
     "fontawesome": "~4.2.0",
     "fullcalendar": "~2.4.0",
