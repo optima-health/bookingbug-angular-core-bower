@@ -9,12 +9,6 @@
     appKey: 'f0bc4f65f4fbfe7b4b3b7264b655f5eb'
   });
 
-  app.value('AirbrakeConfig', {
-    projectId: '122836',
-    projectKey: 'e6d6710b2cf00be965e8452d6a384d37',
-    environment: window.location.hostname === 'localhost' ? 'development' : 'production'
-  });
-
   if (window.use_no_conflict) {
     window.bbjq = $.noConflict();
     app.value('$bbug', jQuery.noConflict(true));
@@ -142,36 +136,36 @@ angular.module('BB.Services').provider("ie8HttpBackend", function ie8HttpBackend
     } else {
       return null;
     }
- 
+
     var getHostName = function (path) {
       var a = document.createElement('a');
       a.href = path;
       return a.hostname;
     }
- 
+
     var isLocalCall = function (reqUrl) {
       var reqHost = getHostName(reqUrl),
         localHost = getHostName($browser.url());
       if (reqHost == '') return true;
- 
-      patt = new RegExp( localHost + "$", 'i'); 
+
+      patt = new RegExp( localHost + "$", 'i');
       return patt.test(reqHost);
     }
- 
+
     function completeRequest(callback, status, response, headersString) {
       var url = url || $browser.url(),
         URL_MATCH = /^([^:]+):\/\/(\w+:{0,1}\w*@)?(\{?[\w\.-]*\}?)(:([0-9]+))?(\/[^\?#]*)?(\?([^#]*))?(#(.*))?$/;
- 
- 
+
+
       // URL_MATCH is defined in src/service/location.js
       var protocol = (url.match(URL_MATCH) || ['', locationProtocol])[1];
- 
+
       // fix status code for file protocol (it's always 0)
       status = (protocol == 'file') ? (response ? 200 : 404) : status;
- 
+
       // normalize IE bug (http://bugs.jquery.com/ticket/1450)
       status = status == 1223 ? 204 : status;
- 
+
       callback(status, response, headersString);
       $browser.$$completeOutstandingRequest(angular.noop);
     }
@@ -189,7 +183,7 @@ angular.module('BB.Services').provider("ie8HttpBackend", function ie8HttpBackend
         success: function (respObj) {
           headers = 'Content-Type: ' + respObj.contentType;
           if (respObj.authToken)
-            headers += '\r\n' + 'Auth-Token: ' + respObj.authToken; 
+            headers += '\r\n' + 'Auth-Token: ' + respObj.authToken;
           completeRequest(callback, respObj.statusCode.status, respObj.responseText, headers);
         },
         error: function (data) {
@@ -200,7 +194,7 @@ angular.module('BB.Services').provider("ie8HttpBackend", function ie8HttpBackend
     return function (method, url, post, callback, headers, timeout, withCredentials) {
       $browser.$$incOutstandingRequestCount();
       url = url || $browser.url();
- 
+
       if (isLocalCall(url) ) {
         xhr(method, url, post, callback, headers, timeout, withCredentials);
       } else {
@@ -213,7 +207,7 @@ angular.module('BB.Services').provider("ie8HttpBackend", function ie8HttpBackend
         }, timeout);
       }
     }
- 
+
   }
 
 
@@ -538,7 +532,7 @@ var NO_JQUERY = {};
          bind: function(type, fn, origin, hash, async_reply) {
            pm._replyBind ( type, fn, origin, hash, async_reply );
          },
-       
+
          _replyBind: function(type, fn, origin, hash, isCallback) {
            if (("postMessage" in window) && !hash) {
                pm._bind();
@@ -676,7 +670,7 @@ var NO_JQUERY = {};
                            pm.send({target:e.source, data:data, type:msg.callback});
                        }
                      }
-                     
+
                      try {
                          if ( o.callback ) {
                            o.fn(msg.data, sendReply, e);
@@ -823,7 +817,7 @@ var NO_JQUERY = {};
                          pm.send({target:source_window, data:data, type:msg.callback, hash:true, url:hash.source.url});
                        }
                      }
-                     
+
                      try {
                          if ( o.callback ) {
                            o.fn(msg.data, sendReply);
@@ -1596,7 +1590,7 @@ angular.module('ngStorage', [])
 .factory('$localStorage', [
   '$window', '$fakeStorage',
   function($window, $fakeStorage) {
-    function isStorageSupported(storageName) 
+    function isStorageSupported(storageName)
     {
       var testKey = 'test',
         storage = $window[storageName];
@@ -1605,8 +1599,8 @@ angular.module('ngStorage', [])
         storage.setItem(testKey, '1');
         storage.removeItem(testKey);
         return true;
-      } 
-      catch (error) 
+      }
+      catch (error)
       {
         return false;
       }
@@ -1640,7 +1634,7 @@ angular.module('ngStorage', [])
 .factory('$sessionStorage', [
   '$window', '$fakeStorage',
   function($window, $fakeStorage) {
-    function isStorageSupported(storageName) 
+    function isStorageSupported(storageName)
     {
       var testKey = 'test',
         storage = $window[storageName];
@@ -1649,8 +1643,8 @@ angular.module('ngStorage', [])
         storage.setItem(testKey, '1');
         storage.removeItem(testKey);
         return true;
-      } 
-      catch (error) 
+      }
+      catch (error)
       {
         return false;
       }
@@ -1693,21 +1687,21 @@ angular.module('ngLocalData', ['angular-hal']).
     storage = function()
     {
       return $sessionStorage
-    } 
+    }
     localSave = function(key, item){
-      storage().setItem(key, item.$toStore())   
-    } 
+      storage().setItem(key, item.$toStore())
+    }
     localLoad = function(key){
       res =  jsonData(storage().getItem(key))
       if (res)
-      {  
+      {
         r = halClient.createResource(res)
         def = $q.defer()
         def.resolve(r)
         return def.promise
       }
       return null
-    } 
+    }
     localDelete = function(key) {
       storage().removeItem(key)
     }
@@ -1737,13 +1731,13 @@ angular.module('ngLocalData', ['angular-hal']).
       has: function(key)
       {
         if (!data[key])
-        { 
+        {
           res = localLoad(key)
           if (res)
             data[key] = res
         }
         return (key in data)
-      }      
+      }
     }
 
 }]).
@@ -1760,7 +1754,7 @@ angular.module('ngLocalData', ['angular-hal']).
       LocalData.prototype.storage = function()
       {
         return $sessionStorage
-      }  
+      }
 
       LocalData.prototype.localSave = function(item)
       {
@@ -1804,7 +1798,7 @@ angular.module('ngLocalData', ['angular-hal']).
 
      //   channel.bind('add', function(data) {
      //     ds.data_store.push(data);
-     //     $rootScope.$broadcast("Refresh_" + ds.store_name, "Updated");          
+     //     $rootScope.$broadcast("Refresh_" + ds.store_name, "Updated");
      //   });
 
       }
@@ -1826,7 +1820,7 @@ angular.module('ngLocalData', ['angular-hal']).
     };
 
 
-    
+
     return LocalDataFactory
 }]);
 
@@ -1837,7 +1831,7 @@ getControllerScope = function(controller, fn){
   $(document).ready(function(){
     var $element = $('div[data-ng-controller="' + controller + '"]');
     var scope = angular.element($element).scope();
-    fn(scope); 
+    fn(scope);
   });
 }
 
@@ -4542,7 +4536,7 @@ function getURIparam( name ){
   * @property {array} bookable_items An array of all BookableItems - used if the current_item has already selected a resource or person
   * @property {bulk_purchase} bulk_purchase The currectly selected bulk_purchase
   * @example
-  *  <example module="BB"> 
+  *  <example module="BB">
   *    <file name="index.html">
   *   <div bb-api-url='https://uk.bookingbug.com'>
   *   <div  bb-widget='{company_id:21}'>
@@ -4553,7 +4547,7 @@ function getURIparam( name ){
   *     </div>
   *     </div>
   *     </div>
-  *   </file> 
+  *   </file>
   *  </example>
   *
    */
@@ -4643,7 +4637,7 @@ function getURIparam( name ){
   * @property {string} name The category name
   * @property {integer} id The category id
   * @example
-  *  <example module="BB"> 
+  *  <example module="BB">
   *    <file name="index.html">
   *   <div bb-api-url='https://uk.bookingbug.com'>
   *   <div  bb-widget='{company_id:21}'>
@@ -4654,7 +4648,7 @@ function getURIparam( name ){
   *     </div>
   *     </div>
   *     </div>
-  *   </file> 
+  *   </file>
   *  </example>
   *
    */
@@ -4701,7 +4695,7 @@ function getURIparam( name ){
     * @name selectItem
     * @methodOf BB.Directives:bbCategories
     * @description
-    * Select an item 
+    * Select an item
     *
     * @param {object} item The Service or BookableItem to select
     * @param {string=} route A specific route to load
@@ -5270,7 +5264,7 @@ function getURIparam( name ){
   * @property {object} validator The validator service - see {@link BB.Services:Validator Validator Service}
   * @property {object} alert The alert service - see {@link BB.Services:Alert Alert Service}
   * @example
-  *  <example module="BB"> 
+  *  <example module="BB">
   *    <file name="index.html">
   *   <div bb-api-url='https://uk.bookingbug.com'>
   *   <div  bb-widget='{company_id:21}'>
@@ -5285,7 +5279,7 @@ function getURIparam( name ){
   *      </div>
   *     </div>
   *     </div>
-  *   </file> 
+  *   </file>
   *  </example>
    */
 
@@ -5353,7 +5347,7 @@ function getURIparam( name ){
     * @methodOf BB.Directives:bbCompanies
     * @description
     * Get nearest company in according of center parameter
-    * 
+    *
     * @param {string} center Geolocation parameter
      */
     return $scope.getNearestCompany = (function(_this) {
@@ -7876,7 +7870,7 @@ function getURIparam( name ){
     * @description
     * Login with password
     *
-    * @param {string} email The email address that use for the login 
+    * @param {string} email The email address that use for the login
     * @param {string} password The password use for the login
      */
     $scope.login_with_password = function(email, password) {
@@ -9311,7 +9305,7 @@ function getURIparam( name ){
     * @name setTimeRange
     * @methodOf BB.Directives:bbTimeRangeStacked
     * @description
-    * Set time range in according of selected_date 
+    * Set time range in according of selected_date
     *
     * @param {date} selected_date The selected date from multi time range list
     * @param {date} start_date The start date of range list
@@ -9848,7 +9842,7 @@ function getURIparam( name ){
   * @property {package} package The currectly selected package
   * @property {hash} filters A hash of filters
   * @example
-  *  <example module="BB"> 
+  *  <example module="BB">
   *    <file name="index.html">
   *   <div bb-api-url='https://uk.bookingbug.com'>
   *   <div  bb-widget='{company_id:21}'>
@@ -9859,7 +9853,7 @@ function getURIparam( name ){
   *     </div>
   *     </div>
   *     </div>
-  *   </file> 
+  *   </file>
   *  </example>
   *
    */
@@ -11856,7 +11850,7 @@ function getURIparam( name ){
   * scope: true
   * </pre>
   *
-  * @property {array} booking_item The booking item 
+  * @property {array} booking_item The booking item
   * @property {date} start_date The start date
   * @property {date} end_date The end date
   * @property {array} slots The slots
@@ -15779,7 +15773,7 @@ angular.module('BB.Directives')
   * @description
   * Use with forms to add enhanced validation. When using with ng-form, submitForm
   * needs to be called manually as submit event is not raised.
-  
+
   *
   * @example
   * <div ng-form name="example_form" bb-form></div>
@@ -15907,7 +15901,7 @@ angular.module('BB.Directives')
   *
   * @description
   * Use with modal templates to ensure modal height does not exceed window height
-  
+
   *
   * @example
   * <div bb-modal></div>
@@ -15951,7 +15945,7 @@ angular.module('BB.Directives')
   *
   * @description
   * Adds a background-image to an element
-  
+
   * @param
   * {string} url
   *
@@ -17352,11 +17346,11 @@ angular.module('BB.Directives')
   * @description
   * Representation of an Address Object
   *
-  * @property {string} address1 First line of the address 
-  * @property {string} address2 Second line of the address 
-  * @property {string} address3 Third line of the address 
-  * @property {string} address4 Fourth line of the address 
-  * @property {string} address5 Fifth line of the address 
+  * @property {string} address1 First line of the address
+  * @property {string} address2 Second line of the address
+  * @property {string} address3 Third line of the address
+  * @property {string} address4 Fourth line of the address
+  * @property {string} address5 Fifth line of the address
   * @property {string} postcode The Postcode/Zipcode
   * @property {string} country The country
    */
@@ -17642,7 +17636,7 @@ angular.module('BB.Directives')
       * @name getQuestion
       * @methodOf BB.Models:Answer
       * @description
-      * Build an array of questions 
+      * Build an array of questions
       *
       * @returns {promise} A promise for the question/s
        */
@@ -19397,7 +19391,7 @@ angular.module('BB.Directives')
       * Set person according to per parameter
       *
       * @param {object} per A hash representing a person object
-      
+
       * @param {boolean} set_selected The returned set resource for basket item
        */
 
@@ -21502,7 +21496,7 @@ angular.module('BB.Directives')
   * Representation of an Clinic Object
   *
   * @property {string} setTimes Set times for the clinic
-  * @property {string} setResourcesAndPeople Set resources and people for the clinic 
+  * @property {string} setResourcesAndPeople Set resources and people for the clinic
   * @property {object} settings Clinic settings
   * @property {string} resources Clinic resources
   * @property {integer} resource_ids Clinic resources ids
@@ -21641,7 +21635,7 @@ angular.module('BB.Directives')
   *
   * @constructor
   * @param {HALobject=} data A HAL object to initialise the company from
-  * 
+  *
   * @property {string} name The company name
   * @property {string} description The company description
   * @property {string} country_code the Country code for thie company
@@ -22379,7 +22373,7 @@ angular.module('BB.Directives')
       * @name numTicketsSelected
       * @methodOf BB.Models:Event
       * @description
-      * 
+      *
       *
       * @returns {object} get number of tickets selected
        */
@@ -22411,7 +22405,7 @@ angular.module('BB.Directives')
   *
   * @description
   * Representation of an EventChain Object
-  * 
+  *
   * @property {integer} id The id of event chain
   * @property {string} name Name of the event chain
   * @property {string} description The description of the event
@@ -22678,7 +22672,7 @@ angular.module('BB.Directives')
   * @property {integer} max_spaces The maximum spaces of the evenet
   * @property {integer} counts_as The counts as
   * @property {string} pool_name The pool name
-  * @property {string} name The name 
+  * @property {string} name The name
   * @property {string} min_num_bookings The minimum number of the bookings
   * @property {string} qty The quantity of the event ticket
   * @property {string} totalQty The total quantity of the event ticket
@@ -23028,7 +23022,7 @@ angular.module('BB.Directives')
       * @name checkConditionalQuestions
       * @methodOf BB.Models:ItemDetails
       * @description
-      * Checks if exist conditional questions 
+      * Checks if exist conditional questions
       *
       * @returns {boolean} The returned existing conditional questions
        */
@@ -23043,7 +23037,7 @@ angular.module('BB.Directives')
       * @name getPostData
       * @methodOf BB.Models:ItemDetails
       * @description
-      * Get data 
+      * Get data
       *
       * @returns {array} The returned data
        */
@@ -24472,31 +24466,13 @@ angular.module('BB.Directives')
 * @description
 * JavaScript notifier for capturing errors in web browsers and reporting them to Airbrake.
 *
- */
+* @deprecated
+*/
 
 (function() {
   angular.module('BB.Services').factory('$exceptionHandler', function($log, AirbrakeConfig) {
-    var airbrake;
-    airbrake = new airbrakeJs.Client({
-      projectId: AirbrakeConfig.projectId,
-      projectKey: AirbrakeConfig.projectKey
-    });
-    airbrake.addFilter(function(notice) {
-      if (AirbrakeConfig.environment === 'development' || !notice.params.from_sdk) {
-        return false;
-      }
-      notice.context.environment = 'production';
-      return notice;
-    });
     return function(exception, cause, sdkError) {
       $log.error(exception);
-      airbrake.notify({
-        error: exception,
-        params: {
-          angular_cause: cause,
-          from_sdk: sdkError
-        }
-      });
     };
   });
 
@@ -27552,7 +27528,7 @@ angular.module('BB.Directives')
 * @name BB.Services:PathHelper
 *
 * @description
-* Helper service for retrieving params from $location.path 
+* Helper service for retrieving params from $location.path
 *
  */
 
