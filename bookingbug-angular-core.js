@@ -24470,7 +24470,7 @@ angular.module('BB.Directives')
 */
 
 (function() {
-  angular.module('BB.Services').factory('$exceptionHandler', function($log, AirbrakeConfig) {
+  angular.module('BB.Services').factory('$exceptionHandler', function($log) {
     return function(exception, cause, sdkError) {
       $log.error(exception);
     };
